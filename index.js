@@ -19,7 +19,7 @@ function generateRandomId() {
 }
 
 var CONNECTION_STRING = `mongodb+srv://${process.env.USER_NAME}:${process.env.PASS_WORD}@cluster0.zbounx6.mongodb.net/?retryWrites=true&w=majority`;
-var DATABASE_NAME = process.env.DATABASENAME;
+var DATABASE_NAME = process.env.DATABASE_NAME;
 
 
 var database;
@@ -33,8 +33,8 @@ app.listen(port, () => {
 
 app.get('/',(request,response)=>{
   const data = {
-    dbName : process.env.DATABASENAME,
-    collName : process.env.COLLECTIONNAME,
+    dbName : process.env.DATABASE_NAME,
+    collName : process.env.COLLECTION_NAME,
     userName : process.env.USER_NAME,
     passwrd : process.env.PASS_WORD
   }
@@ -42,7 +42,7 @@ app.get('/',(request,response)=>{
 })
 
 app.get('/api/todoapp/GetNotes',(request,response)=>{
-    database.collection(process.env.COLLECTIONNAME).find({}).toArray((error,result)=>{
+    database.collection(process.env.COLLECTION_NAME).find({}).toArray((error,result)=>{
         response.send(result)
     })
 })
@@ -50,13 +50,13 @@ app.get('/api/todoapp/GetNotes',(request,response)=>{
 
 app.post('/api/todoapp/AddNotes', multer().none(), async (request, response) => {
     try {
-      const count = await database.collection(process.env.COLLECTIONNAME).countDocuments();
+      const count = await database.collection(process.env.COLLECTION_NAME).countDocuments();
       const newNotes = {
         id: generateRandomId(),
         description: request.body.newNotes
       };
   
-      const result = await database.collection(process.env.COLLECTIONNAME).insertOne(newNotes);
+      const result = await database.collection(process.env.COLLECTION_NAME).insertOne(newNotes);
   
       response.json({ message: "Added Successfully", newNotes });
     } catch (error) {
@@ -75,7 +75,7 @@ app.post('/api/todoapp/AddNotes', multer().none(), async (request, response) => 
             type: "done"
         };
 
-        const existingNote = await database.collection(process.env.COLLECTIONNAME).findOne({ id: noteId });
+        const existingNote = await database.collection(process.env.COLLECTION_NAME).findOne({ id: noteId });
       
 
         if (!existingNote) {
@@ -83,7 +83,7 @@ app.post('/api/todoapp/AddNotes', multer().none(), async (request, response) => 
             return response.status(404).json({ error: "Note not found" });
         }
 
-        await database.collection(process.env.COLLECTIONNAME).updateOne({ id: noteId }, { $set: updatedNotes });
+        await database.collection(process.env.COLLECTION_NAME).updateOne({ id: noteId }, { $set: updatedNotes });
 
         response.json({ message: "Updated Successfully", updatedNotes });
     } catch (error) {
@@ -94,7 +94,7 @@ app.post('/api/todoapp/AddNotes', multer().none(), async (request, response) => 
 
 
 app.delete('/api/todoapp/DeleteNotes',(request,response)=>{
-    database.collection(process.env.COLLECTIONNAME).deleteOne({
+    database.collection(process.env.COLLECTION_NAME).deleteOne({
         id:request.query.id
     })
     response.json("Deleted Successfully")
