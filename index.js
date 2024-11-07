@@ -32,7 +32,7 @@ app.listen(port, () => {
 });
 
 app.get('/',(request,response)=>{
-  response.send("Hello")
+  response.send(process.env.DATABASENAME,process.env.COLLECTIONNAME,process.env.USER_NAME,process.env.PASS_WORD)
 })
 
 app.get('/api/todoapp/GetNotes',(request,response)=>{
