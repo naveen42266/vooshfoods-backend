@@ -7,25 +7,18 @@ const uuid = require('uuid');
 
 var app = express(); 
 app.use(cors(
-  // {
-  //   origin:["http://localhost:3000/","https://todo-website-naveen4.vercel.app/","https://todo-website-drab.vercel.app/","https://todo-website-git-main-naveen4.vercel.app/","https://todo-website-dcmqddldl-naveen4.vercel.app/"],
-  //   methods:["POST","PUT","GET","DELETE"],
-  //   credentials:true
-  // }
+  {
+    origin:["http://localhost:3000/","https://todo-website-naveen4.vercel.app/","https://todo-website-drab.vercel.app/","https://todo-website-git-main-naveen4.vercel.app/","https://todo-website-dcmqddldl-naveen4.vercel.app/"],
+    methods:["POST","PUT","GET","DELETE"],
+    credentials:true
+  }
 ));
 var CLUSTER_IP1 = "152.58.212.84";
 function generateRandomId() {
   return uuid.v4();
 }
-// var CONNECTION_STRING = `mongodb://${CLUSTER_IP1}/?retryWrites=true&w=majority`;
 
-var CONNECTION_STRING = `mongodb+srv://${process.env.USER_NAME}:${process.env.PASS_WORD}@cluster0.zbounx6.mongodb.net/?retryWrites=true&w=majority`// var CONNECTION_STRING = "mongodb+srv://admin:naveen@cluster0.zbounx6.mongodb.net/?retryWrites=true&w=majority";
-// var CONNECTION_STRING = "mongodb+srv://admin:naveen@cluster0.zbounx6.mongodb.net/?retryWrites=true&w=majority&ssl=true&tlsAllowInvalidCertificates=true";
-// var CONNECTION_STRING = "mongodb+srv://admin:naveen@cluster0.zbounx6.mongodb.net/?retryWrites=true&w=majority&ssl=true&tlsAllowInvalidCertificates=true&tlsVersion=TLSv1_2";
-// var CONNECTION_STRING = "mongodb+srv://admin:naveen@cluster0.zbounx6.mongodb.net/?retryWrites=true&w=majority&ssl=true&tlsAllowInvalidCertificates=true";
-// var CONNECTION_STRING = "mongodb+srv://admin:naveen@cluster0.zbounx6.mongodb.net/?retryWrites=true&w=majority&ssl=true";
-// console.log(`mongodb+srv://${process.env.USERNAME}:${process.env.PASSWORD}@cluster0.zbounx6.mongodb.net/?retryWrites=true&w=majority`)
-// console.log(process.env.USER_NAME,process.env.PASS_WORD)
+var CONNECTION_STRING = `mongodb+srv://${process.env.USER_NAME}:${process.env.PASS_WORD}@cluster0.zbounx6.mongodb.net/?retryWrites=true&w=majority`;
 var DATABASE_NAME = process.env.DATABASENAME;
 
 
