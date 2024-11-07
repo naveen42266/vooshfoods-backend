@@ -6,13 +6,13 @@ const multer = require("multer");
 const uuid = require('uuid');
 
 var app = express(); 
-app.use(cors(
-  {
-    origin:["http://localhost:3000/","https://todo-website-naveen4.vercel.app/","https://todo-website-drab.vercel.app/","https://todo-website-git-main-naveen4.vercel.app/","https://todo-website-dcmqddldl-naveen4.vercel.app/"],
-    methods:["POST","PUT","GET","DELETE"],
-    credentials:true
-  }
-));
+// app.use(cors(
+//   {
+//     origin:["http://localhost:3000/","https://todo-website-naveen4.vercel.app/","https://todo-website-drab.vercel.app/","https://todo-website-git-main-naveen4.vercel.app/","https://todo-website-dcmqddldl-naveen4.vercel.app/"],
+//     methods:["POST","PUT","GET","DELETE"],
+//     credentials:true
+//   }
+// ));
 var CLUSTER_IP1 = "152.58.212.84";
 function generateRandomId() {
   return uuid.v4();
@@ -32,15 +32,14 @@ app.listen(port, () => {
 });
 
 app.get('/',(request,response)=>{
-  const data = {
-    dbName : process.env.DATABASE_NAME,
-    collName : process.env.COLLECTION_NAME,
-    userName : process.env.USER_NAME,
-    passwrd : process.env.PASS_WORD
-  }
+  // const data = {
+  //   dbName : process.env.DATABASE_NAME,
+  //   collName : process.env.COLLECTION_NAME,
+  //   userName : process.env.USER_NAME,
+  //   passwrd : process.env.PASS_WORD
+  // }
 
-  
-  response.send(data)
+  response.send('Hello')
 })
 
 app.get('/api/todoapp/GetNotes',(request,response)=>{
