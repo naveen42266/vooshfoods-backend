@@ -25,7 +25,7 @@ var CONNECTION_STRING = `mongodb+srv://${process.env.USER_NAME}:${process.env.PA
 // var CONNECTION_STRING = "mongodb+srv://admin:naveen@cluster0.zbounx6.mongodb.net/?retryWrites=true&w=majority&ssl=true&tlsAllowInvalidCertificates=true";
 // var CONNECTION_STRING = "mongodb+srv://admin:naveen@cluster0.zbounx6.mongodb.net/?retryWrites=true&w=majority&ssl=true";
 // console.log(`mongodb+srv://${process.env.USERNAME}:${process.env.PASSWORD}@cluster0.zbounx6.mongodb.net/?retryWrites=true&w=majority`)
-console.log(process.env.USER_NAME,process.env.PASS_WORD)
+// console.log(process.env.USER_NAME,process.env.PASS_WORD)
 var DATABASE_NAME = process.env.DATABASENAME;
 
 
