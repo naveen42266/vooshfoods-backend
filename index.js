@@ -32,7 +32,13 @@ app.listen(port, () => {
 });
 
 app.get('/',(request,response)=>{
-  response.send(process.env.DATABASENAME,process.env.COLLECTIONNAME,process.env.USER_NAME,process.env.PASS_WORD)
+  const data = {
+    dbName : process.env.DATABASENAME,
+    collName : process.env.COLLECTIONNAME,
+    userName : process.env.USER_NAME,
+    passwrd : process.env.PASS_WORD
+  }
+  response.send(data)
 })
 
 app.get('/api/todoapp/GetNotes',(request,response)=>{
