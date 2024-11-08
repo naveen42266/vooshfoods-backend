@@ -1,102 +1,29 @@
-require('dotenv').config();
-var express = require("express");
-var MongoClient = require("mongodb").MongoClient;
-var cors = require("cors");
-const multer = require("multer");
-const uuid = require('uuid');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const todoRoutes = require("./routes/todoRoutes");
+const { connectToDatabase } = require("./db");
+const { PORT, ALLOWED_ORIGINS } = require("./config");
 
-var app = express(); 
-app.use(cors(
-  {
-    origin:["http://localhost:3000"],
-    methods:["POST","PUT","GET","DELETE"],
-    credentials:true
-  }
-));
-var CLUSTER_IP1 = "152.58.212.84";
-function generateRandomId() {
-  return uuid.v4();
-}
+const app = express();
 
-var CONNECTION_STRING = `mongodb+srv://${process.env.USER_NAME}:${process.env.PASS_WORD}@cluster0.zbounx6.mongodb.net/?retryWrites=true&w=majority`;
-var DATABASE_NAME = process.env.DATABASE_NAME;
+// CORS configuration
+app.use(cors({
+  origin: ALLOWED_ORIGINS,
+  methods: ["POST", "PUT", "GET", "DELETE"],
+  credentials: true,
+}));
 
+app.use(express.json()); // Middleware for parsing JSON
+app.use('/api/todoapp', todoRoutes); // Register routes
 
-var database;
-const port = process.env.PORT || 8080;
-app.listen(port, () => {
-  MongoClient.connect(CONNECTION_STRING, (error, client) => {
-    database = client.db(DATABASE_NAME); 
-    console.log("MongoDB connection successful");
-  });
+// Root route
+app.get("/", (req, res) => {
+  res.send("Hello");
 });
 
-app.get('/',(request,response)=>{
-  // const data = {
-  //   dbName : process.env.DATABASE_NAME,
-  //   collName : process.env.COLLECTION_NAME,
-  //   userName : process.env.USER_NAME,
-  //   passwrd : process.env.PASS_WORD
-  // }
-
-  response.send('Hello')
-})
-
-app.get('/api/todoapp/GetNotes',(request,response)=>{
-    database.collection(process.env.COLLECTION_NAME).find({}).toArray((error,result)=>{
-        response.send(result)
-    })
-})
-
-
-app.post('/api/todoapp/AddNotes', multer().none(), async (request, response) => {
-    try {
-      const count = await database.collection(process.env.COLLECTION_NAME).countDocuments();
-      const newNotes = {
-        id: generateRandomId(),
-        description: request.body.newNotes
-      };
-  
-      const result = await database.collection(process.env.COLLECTION_NAME).insertOne(newNotes);
-  
-      response.json({ message: "Added Successfully", newNotes });
-    } catch (error) {
-      console.error("Error adding note:", error);
-      response.status(500).json({ error: "Internal Server Error" });
-    }
-  });
-
-
-  app.put('/api/todoapp/UpdateNotes', multer().none(), async (request, response) => {
-    try {
-        const noteId = request.query.id;
-        const updatedNotes = {
-            id: noteId,
-            description: request.body.updatedNotes,
-            type: "done"
-        };
-
-        const existingNote = await database.collection(process.env.COLLECTION_NAME).findOne({ id: noteId });
-      
-
-        if (!existingNote) {
-          console.log(noteId)
-            return response.status(404).json({ error: "Note not found" });
-        }
-
-        await database.collection(process.env.COLLECTION_NAME).updateOne({ id: noteId }, { $set: updatedNotes });
-
-        response.json({ message: "Updated Successfully", updatedNotes });
-    } catch (error) {
-        console.error("Error updating note:", error);
-        response.status(500).json({ error: "Internal Server Error" });
-    }
+// Start server and connect to database
+app.listen(PORT, async () => {
+  await connectToDatabase();
+  console.log(`Server is running on port ${PORT}`);
 });
-
-
-app.delete('/api/todoapp/DeleteNotes',(request,response)=>{
-    database.collection(process.env.COLLECTION_NAME).deleteOne({
-        id:request.query.id
-    })
-    response.json("Deleted Successfully")
-})
