@@ -21,4 +21,14 @@ function getDatabase() {
   return database;
 }
 
-module.exports = { connectToDatabase, getDatabase };
+async function initializeCounter() {
+  const countersCollection = database.collection("counters");
+  await countersCollection.updateOne(
+    { _id: "userId" },
+    { $setOnInsert: { userCount: 0 } },
+    { upsert: true }
+  );
+  console.log("Counters collection initialized");
+}
+
+module.exports = { connectToDatabase, getDatabase, initializeCounter };
