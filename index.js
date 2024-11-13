@@ -43,7 +43,7 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        console.log("Profile:", profile); // Log profile to check if data is received
+        // console.log("Profile:", profile); // Log profile to check if data is received
         const database = getDatabase();
         const userCollection = database.collection("vooshfoodsdbusercollection");
 
