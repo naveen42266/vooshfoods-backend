@@ -95,7 +95,7 @@ async function googleAuth(req, res) {
     // Generate a custom JWT token for the user
     const token = jwt.sign({ id: user.userId, email: user.email, firstName: user.firstName, lastName: user.lastName, profilePicture: user.profilePicture }, JWT_SECRET, { expiresIn: JWT_EXPIRY });
     // res.redirect(`http://localhost:3000?token=${token}`);
-    res.redirect(`https://vooshfoods-frontend.vercel.app?token=${token}`);
+    res.redirect(`https://todo-vooshfoods.vercel.app?token=${token}`);
     // https://vooshfoods-frontend.vercel.app
     // res.json({
     //   message: "Google login successful",
