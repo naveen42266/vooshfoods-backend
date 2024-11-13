@@ -87,43 +87,28 @@ async function login(req, res) {
   });
 }
 
+// Simplified googleAuth function using req.user from Passport
 async function googleAuth(req, res) {
-  const { token } = req.body;  // Token sent from the frontend (ID token)
-
   try {
-    // Step 1: Verify the Google ID token by calling the Google API
-    const response = await axios.post(
-      `https://oauth2.googleapis.com/tokeninfo?id_token=${token}`
-    );
+    const user = req.user; // Retrieved from Passport's `req.user` after successful authentication
 
-    const googleUser = response.data;
-    let user = await getDatabase().collection(COLLECTION_USER).findOne({ googleId: googleUser.sub });
-
-    // If user doesn't exist, create a new user in the database
-    if (!user) {
-      user = await getDatabase().collection(COLLECTION_USER).insertOne({
-        googleId: googleUser.sub,
-        firstName: googleUser.given_name,
-        lastName: googleUser.family_name,
-        email: googleUser.email,
-      });
-    }
-
-    // Step 2: Create a custom JWT token for the user
-    const userJwt = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: JWT_EXPIRY });
-
-    res.json({
-      message: 'Google login successful',
-      token: userJwt, // Send JWT token back to the frontend
-      user: {
-        userId: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-      },
-    });
+    // Generate a custom JWT token for the user
+    const token = jwt.sign({ id: user.userId, email: user.email, firstName: user.firstName, lastName: user.lastName, profilePicture: user.profilePicture }, JWT_SECRET, { expiresIn: JWT_EXPIRY });
+    // res.redirect(`http://localhost:3000?token=${token}`);
+    res.redirect(`https://vooshfoods-frontend.vercel.app?token=${token}`);
+    // https://vooshfoods-frontend.vercel.app
+    // res.json({
+    //   message: "Google login successful",
+    //   token, // Send JWT token back to the frontend
+    //   user: {
+    //     userId: user._id,
+    //     firstName: user.firstName,
+    //     lastName: user.lastName,
+    //     email: user.email,
+    //   },
+    // });
   } catch (error) {
-    res.status(500).json({ error: 'Error during Google authentication' });
+    res.status(500).json({ error: "Error during Google authentication" });
   }
 }
 
@@ -134,4 +119,4 @@ async function googleAuth(req, res) {
 //   res.json({ message: "Google login successful", user: req.user });
 // }
 
-module.exports = { signup, login, googleAuth };
+module.exports = { signup, login, googleAuth, getNextUserId };

@@ -11,7 +11,7 @@ const authRoutes = require("./routes/authRoutes"); // Import the authentication 
 const { connectToDatabase, getDatabase } = require("./db");
 const { PORT, ALLOWED_ORIGINS, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = require("./config");
 const app = express();
-
+const { getNextUserId } = require("./controllers/authController")
 // CORS configuration
 app.use(cors({
   origin: ALLOWED_ORIGINS,
@@ -48,11 +48,14 @@ passport.use(
 
         let user = await userCollection.findOne({ googleId: profile.id });
         if (!user) {
+          const userId = await getNextUserId(); 
           const result = await userCollection.insertOne({
+            userId,
             googleId: profile.id,
             firstName: profile.name.givenName,
             lastName: profile.name.familyName,
             email: profile.emails[0].value,
+            profilePicture: profile.photos[0].value
           });
           user = await userCollection.findOne({ _id: result.insertedId }); // Retrieve the full user document
         }

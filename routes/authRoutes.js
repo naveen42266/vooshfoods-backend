@@ -11,22 +11,13 @@ router.post("/signup", signup);
 router.post("/login", login);
 
 // Google OAuth route (start Google login)
-// router.post("/google", googleAuth);  // POST route to handle Google login via token
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
 // Google OAuth callback route
-router.get("/google/callback", passport.authenticate("google", { failureRedirect: "/login" }), googleAuth);
-
-
-// Google OAuth route
-// router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
-
-// Google OAuth callback route
-// router.get("/google/callback", passport.authenticate("google", { failureRedirect: "/" }), (req, res) => {
-//   res.redirect("/"); // Redirect or handle successful login
-// });
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { failureRedirect: "/login", session: false }),
+  googleAuth
+);
 
 module.exports = router;
-
-
-
